@@ -75,46 +75,115 @@
 //     console.log("err :>> ", err);
 // }
 
-class Phone {
-    constructor(brand, model, color, price, year) {
-        this._brand = brand;
-        this._model = model;
-        this.color = color;
-        this._price = price;
-        this._year = year;
-    }
+// class Phone {
+//     constructor(brand, model, color, price, year) {
+//         this._brand = brand;
+//         this._model = model;
+//         this.color = color;
+//         this._price = price;
+//         this._year = year;
+//     }
 
-    get getPhoneAge() {
-        return new Date().getFullYear() - this._year;
-    }
+//     get getPhoneAge() {
+//         return new Date().getFullYear() - this._year;
+//     }
 
-    set color(value) {
-        const COLORS = ['white', 'red', 'black', 'yellow', 'green', 'blue', 'grey'];
-        if(COLORS.includes(value)) {
-            this._color = value;
-        } else {
-            throw RangeError('Unsupported color');
-        }
-    }
+//     set color(value) {
+//         const COLORS = ['white', 'red', 'black', 'yellow', 'green', 'blue', 'grey'];
+//         if(COLORS.includes(value)) {
+//             this._color = value;
+//         } else {
+//             throw RangeError('Unsupported color');
+//         }
+//     }
 
-    render() {
-        document.write(`
-            <article>
-                <h2>Brand: ${this._brand}</h2>
-                <p>Model: ${this._model}</p>
-                <p>Color: ${this._color}</p>
-                <p>Price: ${this._price}$</p>
-                <p>Year: ${this._year}</p>
-            </article>
-        `);
+//     render() {
+//         document.write(`
+//             <article>
+//                 <h2>Brand: ${this._brand}</h2>
+//                 <p>Model: ${this._model}</p>
+//                 <p>Color: ${this._color}</p>
+//                 <p>Price: ${this._price}$</p>
+//                 <p>Year: ${this._year}</p>
+//             </article>
+//         `);
+//     }
+// }
+
+// try {
+//     const phone = new Phone('Apple', 'IPhone 12', 'black', 1000, 2021);
+//     console.log('Phone age:', phone.getPhoneAge);
+//     phone.color = 'white';
+//     phone.render();
+// } catch(err) {
+//     console.log('err -> ', err);
+// }
+
+class User {
+    constructor(name, surname, age, isMale, email) {
+        this.name = name;
+        this.surname = surname;
+        this.age = age;
+        this.isMale = isMale;
+        this.email = email;
+        this.isBanned = false;
+    }
+    getFullName() {
+        return `${this.name} ${this.surname}`;
     }
 }
 
-try {
-    const phone = new Phone('Apple', 'IPhone 12', 'black', 1000, 2021);
-    console.log('Phone age:', phone.getPhoneAge);
-    phone.color = 'white';
-    phone.render();
-} catch(err) {
-    console.log('err -> ', err);
+const user = new User("jack", "wilsher", 23, true, "test@SpeechGrammarList.com");
+
+class Moderator extends User {
+    constructor(name, surname, age, isMale, email, permission) {
+        super(name, surname, age, isMale, email);
+        this.permission = permission;
+    }
+
+    sendMessage(user, message) {
+        return `Moderator ${this.getFullName()} sent message "${message}" to user ${user.getFullName()}`;
+    }
 }
+
+const moderator = new Moderator("Mod", "Modovich", 23, true, "test@test.com", { canRead: true, canWrite: true });
+
+document.write(moderator.sendMessage(user, 'Your message is beautiful'));
+
+class Admin extends Moderator {
+  constructor(name, surname, age, isMale, email, permission, category) {
+    super(name, surname, age, isMale, email, permission);
+    this._category = category;
+  }
+
+  ban(user) {
+    user.isBanned = true;
+  }
+
+  unban(user) {
+    user.isBanned = false;
+  }
+
+  // перевизначення
+  sendMessage(user, message) {
+    return `Administrator ${this.getFullName()} send message "${message}" to user ${user.getFullName()}`;
+  }
+}
+
+const admin1 = new Admin(
+  "Admin",
+  "Adminovych",
+  25,
+  false,
+  "test@test.com",
+  { canRead: true, canWrite: true },
+  1
+);
+
+admin1.ban(user1);
+console.log(user1.isBanned);
+admin1.unban(user1);
+console.log(user1.isBanned);
+
+console.log(admin1.getFullName());
+document.write(`<p>${admin1.sendMessage(user1, "blablabla")}</p>`);
